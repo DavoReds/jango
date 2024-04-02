@@ -1,5 +1,7 @@
 mod interface;
 
-fn main() {
-    println!("Hello, world!");
+fn main() -> color_eyre::Result<()> {
+    color_eyre::install()?;
+
+    Ok(())
 }
