@@ -41,6 +41,15 @@ fn parse_md_content(input: &str) -> String {
         .expect("This should never fail")
 }
 
+/// Processes a markdown `&str` containing a TOML frontmatter and returns a tuple with a `Table`
+/// that corresponds to the frontmatter and a String corresponding to the compiled HTML of the
+/// input's contents.
+///
+/// # Errors
+///
+/// This function returns an error if it's unable to extract the TOML frontmatter or if the input's
+/// frontmatter is not valid TOML.
+#[allow(clippy::missing_panics_doc)]
 pub fn process_md_file(
     input: &str,
 ) -> color_eyre::Result<(toml::Table, String)> {

@@ -3,8 +3,7 @@ mod markdown;
 use crate::interface::Command;
 use camino::Utf8Path;
 use jango::parsing::process_md_file;
-
-use self::markdown::render_template_with_markdown;
+use markdown::render_template_with_md;
 
 pub fn execute_application(command: Command) -> color_eyre::Result<()> {
     match command {
@@ -23,12 +22,8 @@ fn create_file_with_markdown(
     let markdown = std::fs::read_to_string(markdown_path)?;
 
     let (frontmatter, content) = process_md_file(&markdown)?;
-    let output = render_template_with_markdown(
-        &template,
-        &frontmatter,
-        &content,
-        false,
-    )?;
+    let output =
+        render_template_with_md(&template, &frontmatter, &content, false)?;
 
     std::fs::write(output_path, output)?;
 

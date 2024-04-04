@@ -1,17 +1,16 @@
 use color_eyre::eyre::Context;
 use tera::Tera;
 
-pub fn render_template_with_markdown(
+pub fn render_template_with_md(
     template: &str,
     frontmatter: &toml::Table,
     content: &str,
     escape: bool,
 ) -> color_eyre::Result<String> {
-    let mut context = tera::Context::from_serialize(frontmatter)?;
-    context.insert("content", content);
+    let mut ctx = tera::Context::from_serialize(frontmatter)?;
+    ctx.insert("content", content);
 
-    Tera::one_off(template, &context, escape)
-        .wrap_err("Failed to render template")
+    Tera::one_off(template, &ctx, escape).wrap_err("Failed to render template")
 }
 
 #[cfg(test)]
@@ -27,12 +26,8 @@ mod tests {
         let (frontmatter, content) =
             process_md_file(md).expect("Failed to process markdown file");
 
-        let result = render_template_with_markdown(
-            template,
-            &frontmatter,
-            &content,
-            false,
-        );
+        let result =
+            render_template_with_md(template, &frontmatter, &content, false);
         assert!(result.is_ok());
 
         let output = result.expect("Failed to render template");
@@ -51,12 +46,8 @@ mod tests {
         let (frontmatter, content) =
             process_md_file(md).expect("Failed to process markdown file");
 
-        let result = render_template_with_markdown(
-            template,
-            &frontmatter,
-            &content,
-            false,
-        );
+        let result =
+            render_template_with_md(template, &frontmatter, &content, false);
         assert!(result.is_err());
     }
 
@@ -68,12 +59,8 @@ mod tests {
         let (frontmatter, content) =
             process_md_file(md).expect("Failed to process markdown file");
 
-        let result = render_template_with_markdown(
-            template,
-            &frontmatter,
-            &content,
-            false,
-        );
+        let result =
+            render_template_with_md(template, &frontmatter, &content, false);
         assert!(result.is_err(), "{result:?}");
     }
 }
