@@ -35,7 +35,7 @@ mod tests {
             output,
             "<html>\n  <head>\n    <title>Test</title>\n  \
             </head>\n  <body><h1>This is a test</h1></body>\n</html>\n"
-        )
+        );
     }
 
     #[test]
