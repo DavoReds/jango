@@ -10,6 +10,12 @@ readme = true
 repository = "https://github.com/DavoReds/jango"
 description = "A CLI program to populate your templates"
 
+[package.metadata.wix]
+upgrade-guid = "DC5FD31C-276A-4140-9EAC-806DF8E9E8F3"
+path-guid = "4CF8B343-ED3D-48F1-89D6-23EBDAD2F44D"
+license = false
+eula = false
+
 [dependencies]
 camino = { version = "1.1.6", features = ["serde1"] }
 clap = { version = "4.5.4", features = ["derive"] }
@@ -26,6 +32,10 @@ lto = true
 codegen-units = 1
 panic = "abort"
 
+[profile.dist]
+inherits = "release"
+lto = "thin"
+
 [lints.rust]
 unsafe_code = "forbid"
 
@@ -34,3 +44,24 @@ enum_glob_use = "deny"
 pedantic = "deny"
 nursery = "deny"
 unwrap_used = "deny"
+
+# Config for 'cargo dist'
+[workspace.metadata.dist]
+# The preferred cargo-dist version to use in CI (Cargo.toml SemVer syntax)
+cargo-dist-version = "0.12.2"
+# CI backends to support
+ci = ["github"]
+# The installers to generate for each app
+installers = ["shell", "powershell", "msi"]
+# Target platforms to build apps for (Rust target-triple syntax)
+targets = [
+  "aarch64-apple-darwin",
+  "x86_64-apple-darwin",
+  "x86_64-unknown-linux-gnu",
+  "x86_64-unknown-linux-musl",
+  "x86_64-pc-windows-msvc",
+]
+# Publish jobs to run in CI
+pr-run-mode = "plan"
+# Whether to install an updater program
+install-updater = false
