@@ -30,6 +30,7 @@ pub struct Cli {
 {all-args}"
 ))]
 pub enum Command {
+    /// Use a Markdown file to populate the template
     #[command(arg_required_else_help = true, visible_alias = "md")]
     Markdown(MarkdownArgs),
 }
@@ -47,9 +48,9 @@ pub struct MarkdownArgs {
     /// Path to the template file
     pub template: Utf8PathBuf,
 
-    /// Path to the input markdown file
+    /// Path to the Markdown file
     pub input: Utf8PathBuf,
 
-    /// Path to put the output file
+    /// Path for the output file
     pub output: Utf8PathBuf,
 }
