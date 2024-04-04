@@ -16,8 +16,8 @@ clap = { version = "4.5.4", features = ["derive"] }
 color-eyre = "0.6.3"
 markdown = { version = "1.0.0-alpha.16", features = ["serde"] }
 serde = "1.0.197"
-serde_yaml = "0.9.34"
 tera = { version = "1.19.1", features = ["date-locale"] }
+toml = { version = "0.8.12", default-features = false, features = ["parse"] }
 walkdir = "2.5.0"
 
 [profile.release]

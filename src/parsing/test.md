@@ -1,7 +1,7 @@
----
-description: This is a test note
-date: 2024-04-03
----
++++
+description = "This is a test note"
+date = "2024-04-03"
++++
 
 # Lorem ipsum dolor sit amet
 

@@ -22,9 +22,9 @@ fn default_md_parse_options() -> ParseOptions {
 fn extract_md_frontmatter(root: &Node) -> color_eyre::Result<String> {
     match root.children() {
         Some(children) => match children.first() {
-            Some(Node::Yaml(frontmatter)) => Ok(frontmatter.value.clone()),
-            Some(Node::Toml(_)) => {
-                Err(eyre!("Invalid frontmatter type. It must be YAML"))
+            Some(Node::Toml(frontmatter)) => Ok(frontmatter.value.clone()),
+            Some(Node::Yaml(_)) => {
+                Err(eyre!("Invalid frontmatter type. It must be TOML"))
             }
             _ => Err(eyre!("Frontmatter not present")),
         },
@@ -32,11 +32,8 @@ fn extract_md_frontmatter(root: &Node) -> color_eyre::Result<String> {
     }
 }
 
-fn parse_md_frontmatter(
-    frontmatter: &str,
-) -> color_eyre::Result<serde_yaml::Value> {
-    serde_yaml::from_str(frontmatter)
-        .wrap_err("Failed to parse YAML frontmatter")
+fn parse_md_frontmatter(frontmatter: &str) -> color_eyre::Result<toml::Table> {
+    toml::from_str(frontmatter).wrap_err("Failed to parse TOML fragment")
 }
 
 fn parse_md_content(input: &str) -> String {
@@ -46,7 +43,7 @@ fn parse_md_content(input: &str) -> String {
 
 pub fn process_md_file(
     input: &str,
-) -> color_eyre::Result<(serde_yaml::Value, String)> {
+) -> color_eyre::Result<(toml::Table, String)> {
     let ast = markdown::to_mdast(input, &default_md_parse_options())
         .expect("This should never fail");
     let frontmatter = extract_md_frontmatter(&ast)?;
@@ -73,13 +70,13 @@ mod tests {
         let result = result.expect("Failed to extract frontmatter");
         assert_eq!(
             result,
-            "description: This is a test note\ndate: 2024-04-03"
+            "description = \"This is a test note\"\ndate = \"2024-04-03\""
         );
     }
 
     #[test]
     fn extract_frontmatter_works_with_empty_frontmatter() {
-        let input = "---\n---\n\n# This is a heading\n\nThis is a paragraph";
+        let input = "+++\n+++\n\n# This is a heading\n\nThis is a paragraph";
         let tree = markdown::to_mdast(input, &default_md_parse_options())
             .expect("This should not fail");
 
@@ -109,7 +106,7 @@ mod tests {
 
     #[test]
     fn extract_frontmatter_errors_on_frontmatter_of_different_type() {
-        let input = include_str!("toml_test.md");
+        let input = include_str!("yaml_test.md");
         let tree = markdown::to_mdast(input, &default_md_parse_options())
             .expect("This should not fail");
 
@@ -118,15 +115,15 @@ mod tests {
     }
 
     #[test]
-    fn parse_frontmatter_works_with_valid_yaml() {
-        let input = "title: This is for a test\nvalid: true";
+    fn parse_frontmatter_works_with_valid_toml() {
+        let input = "title = \"This is for a test\"\nvalid = true";
 
         let result = parse_md_frontmatter(input);
         assert!(result.is_ok());
 
         let result = result.expect("Failed to parse frontmatter");
-        assert_eq!(result["title"], "This is for a test");
-        assert_eq!(result["valid"], true);
+        assert_eq!(result["title"].as_str(), Some("This is for a test"));
+        assert_eq!(result["valid"].as_bool(), Some(true));
     }
 
     #[test]
@@ -191,8 +188,11 @@ mod tests {
         let (frontmatter, content) =
             result.expect("Failed to parse markdown file");
 
-        assert_eq!(frontmatter["description"], "This is a test note");
-        assert_eq!(frontmatter["date"], "2024-04-03");
+        assert_eq!(
+            frontmatter["description"].as_str(),
+            Some("This is a test note")
+        );
+        assert_eq!(frontmatter["date"].as_str(), Some("2024-04-03"));
 
         assert_eq!(
             content,
@@ -214,7 +214,7 @@ mod tests {
 
     #[test]
     fn process_md_file_works_on_a_file_with_an_empty_frontmatter() {
-        let input = "---\n---\n# This is a heading\n\nThis is a paragraph";
+        let input = "+++\n+++\n# This is a heading\n\nThis is a paragraph";
 
         let result = process_md_file(input);
         assert!(result.is_ok());
@@ -228,7 +228,7 @@ mod tests {
 
     #[test]
     fn process_md_file_errors_on_a_file_with_an_invalid_frontmatter() {
-        let input = include_str!("toml_test.md");
+        let input = include_str!("yaml_test.md");
 
         let result = process_md_file(input);
         assert!(result.is_err());
