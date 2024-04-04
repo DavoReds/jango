@@ -7,7 +7,7 @@ categories = ["command-line-utilities", "templates"]
 keywords = ["cli", "app", "templates"]
 license = "Unlicense"
 readme = true
-# repository = "https://gitlab.com/DavoReds/templater"
+repository = "https://github.com/DavoReds/jango"
 description = "A CLI program to populate your templates"
 
 [dependencies]
