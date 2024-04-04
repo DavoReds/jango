@@ -44,6 +44,19 @@ fn parse_md_content(input: &str) -> String {
         .expect("This should never fail")
 }
 
+pub fn process_md_file(
+    input: &str,
+) -> color_eyre::Result<(serde_yaml::Value, String)> {
+    let ast = markdown::to_mdast(input, &default_md_parse_options())
+        .expect("This should never fail");
+    let frontmatter = extract_md_frontmatter(&ast)?;
+    let frontmatter = parse_md_frontmatter(&frontmatter)?;
+
+    let content = parse_md_content(input);
+
+    Ok((frontmatter, content))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
