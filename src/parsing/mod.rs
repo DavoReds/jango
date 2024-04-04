@@ -65,6 +65,16 @@ mod tests {
     }
 
     #[test]
+    fn extract_frontmatter_works_with_empty_frontmatter() {
+        let input = "---\n---\n\n# This is a heading\n\nThis is a paragraph";
+        let tree = markdown::to_mdast(input, &default_md_parse_options())
+            .expect("This should not fail");
+
+        let result = extract_md_frontmatter(&tree);
+        assert!(result.is_ok());
+    }
+
+    #[test]
     fn extract_frontmatter_errors_when_no_frontmatter_is_present() {
         let input = "# This is a title\n\nThis is a paragraph";
         let tree = markdown::to_mdast(input, &default_md_parse_options())
@@ -95,7 +105,7 @@ mod tests {
     }
 
     #[test]
-    fn parse_frontmatter_works_with_valid_input() {
+    fn parse_frontmatter_works_with_valid_yaml() {
         let input = "title: This is for a test\nvalid: true";
 
         let result = parse_md_frontmatter(input);
@@ -107,7 +117,15 @@ mod tests {
     }
 
     #[test]
-    fn parse_frontmatter_errors_with_invalid_input() {
+    fn parse_frontmatter_works_with_empty_frontmatter() {
+        let input = "";
+
+        let result = parse_md_frontmatter(input);
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn parse_frontmatter_errors_with_invalid_yaml() {
         let input = "This is for a test\nvalid: false";
 
         let result = parse_md_frontmatter(input);
@@ -115,7 +133,7 @@ mod tests {
     }
 
     #[test]
-    fn parse_contents_works_with_simple_markdown_content() {
+    fn parse_contents_works_with_simple_markdown() {
         let input =
             "# This is a title\n\nThis is a paragraph with a **bold** word.";
 
@@ -128,7 +146,7 @@ mod tests {
     }
 
     #[test]
-    fn parse_contents_works_with_a_markdown_file_containing_a_frontmatter() {
+    fn parse_contents_works_on_a_file_with_a_frontmatter() {
         let input = include_str!("test.md");
 
         let result = parse_md_content(input);
