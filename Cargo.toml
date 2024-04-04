@@ -8,7 +8,7 @@ keywords = ["cli", "app", "templates"]
 # license = "Unlicense"
 readme = true
 # repository = "https://gitlab.com/DavoReds/templater"
-description = ""
+description = "A CLI program to populate your templates"
 
 [dependencies]
 camino = { version = "1.1.6", features = ["serde1"] }
