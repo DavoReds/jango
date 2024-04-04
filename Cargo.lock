@@ -496,7 +496,6 @@ dependencies = [
  "serde",
  "tera",
  "toml",
- "walkdir",
 ]
 
 [[package]]
