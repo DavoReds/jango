@@ -19,12 +19,12 @@ fn default_md_parse_options() -> ParseOptions {
 }
 
 #[allow(clippy::option_if_let_else)]
-fn extract_frontmatter(root: &Node) -> color_eyre::Result<String> {
+fn extract_md_frontmatter(root: &Node) -> color_eyre::Result<String> {
     match root.children() {
         Some(children) => match children.first() {
             Some(Node::Yaml(frontmatter)) => Ok(frontmatter.value.clone()),
             Some(Node::Toml(_)) => {
-                Err(eyre!("Invalid frontmatter type, it must be YAML"))
+                Err(eyre!("Invalid frontmatter type. It must be YAML"))
             }
             _ => Err(eyre!("Frontmatter not present")),
         },
@@ -32,14 +32,14 @@ fn extract_frontmatter(root: &Node) -> color_eyre::Result<String> {
     }
 }
 
-fn parse_frontmatter(
+fn parse_md_frontmatter(
     frontmatter: &str,
 ) -> color_eyre::Result<serde_yaml::Value> {
     serde_yaml::from_str(frontmatter)
         .wrap_err("Failed to parse YAML frontmatter")
 }
 
-fn parse_content(input: &str) -> String {
+fn parse_md_content(input: &str) -> String {
     markdown::to_html_with_options(input, &default_md_options())
         .expect("This should never fail")
 }
@@ -54,7 +54,7 @@ mod tests {
         let tree = markdown::to_mdast(input, &default_md_parse_options())
             .expect("This should not fail");
 
-        let result = extract_frontmatter(&tree);
+        let result = extract_md_frontmatter(&tree);
         assert!(result.is_ok());
 
         let result = result.expect("Failed to extract frontmatter");
@@ -70,7 +70,7 @@ mod tests {
         let tree = markdown::to_mdast(input, &default_md_parse_options())
             .expect("This should not fail");
 
-        let result = extract_frontmatter(&tree);
+        let result = extract_md_frontmatter(&tree);
         assert!(result.is_err());
     }
 
@@ -80,7 +80,7 @@ mod tests {
         let tree = markdown::to_mdast(input, &default_md_parse_options())
             .expect("This should not fail");
 
-        let result = extract_frontmatter(&tree);
+        let result = extract_md_frontmatter(&tree);
         assert!(result.is_err());
     }
 
@@ -90,7 +90,7 @@ mod tests {
         let tree = markdown::to_mdast(input, &default_md_parse_options())
             .expect("This should not fail");
 
-        let result = extract_frontmatter(&tree);
+        let result = extract_md_frontmatter(&tree);
         assert!(result.is_err());
     }
 
@@ -98,7 +98,7 @@ mod tests {
     fn parse_frontmatter_works_with_valid_input() {
         let input = "title: This is for a test\nvalid: true";
 
-        let result = parse_frontmatter(input);
+        let result = parse_md_frontmatter(input);
         assert!(result.is_ok());
 
         let result = result.expect("Failed to parse frontmatter");
@@ -110,7 +110,7 @@ mod tests {
     fn parse_frontmatter_errors_with_invalid_input() {
         let input = "This is for a test\nvalid: false";
 
-        let result = parse_frontmatter(input);
+        let result = parse_md_frontmatter(input);
         assert!(result.is_err());
     }
 
@@ -119,7 +119,7 @@ mod tests {
         let input =
             "# This is a title\n\nThis is a paragraph with a **bold** word.";
 
-        let result = parse_content(input);
+        let result = parse_md_content(input);
         assert_eq!(
             result,
             "<h1>This is a title</h1>\n<p>This is a paragraph \
@@ -131,7 +131,7 @@ mod tests {
     fn parse_contents_works_with_a_markdown_file_containing_a_frontmatter() {
         let input = include_str!("test.md");
 
-        let result = parse_content(input);
+        let result = parse_md_content(input);
         assert_eq!(
             result,
             "<h1>Lorem ipsum dolor sit amet</h1>\n<p>Lorem \
