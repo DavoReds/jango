@@ -22,7 +22,7 @@ A CLI application to populate your templates.
 #### Install prebuilt binaries via shell script
 
 ```sh
-curl --proto '=https' --tlsv1.2 -LsSf https://github.com/DavoReds/jango/releases/download/v0.1.3/jango-installer.sh | sh
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/DavoReds/jango/releases/download/v0.1.5/jango-installer.sh | sh
 ```
 
 This works for both Linux & MacOS.
@@ -30,7 +30,7 @@ This works for both Linux & MacOS.
 #### Install prebuilt binaries via powershell script
 
 ```sh
-powershell -c "irm https://github.com/DavoReds/jango/releases/download/v0.1.3/jango-installer.ps1 | iex"
+powershell -c "irm https://github.com/DavoReds/jango/releases/download/v0.1.5/jango-installer.ps1 | iex"
 ```
 
 You can also download the prebuild binaries manually from the [releases](https://github.com/DavoReds/jango/releases) page.
