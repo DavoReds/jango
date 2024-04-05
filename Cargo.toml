@@ -1,6 +1,6 @@
 [package]
 name = "jango"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 authors = ["Dalia Rojas Vallejo <daliarojasvallejo@proton.me>"]
 categories = ["command-line-utilities", "templates"]

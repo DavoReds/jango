@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2](https://github.com/DavoReds/jango/compare/v0.1.1...v0.1.2) - 2024-04-05
+
+### Other
+- release
+
 ## [0.1.1](https://github.com/DavoReds/jango/compare/v0.1.0...v0.1.1) - 2024-04-05
 
 ### Other
