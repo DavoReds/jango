@@ -3,7 +3,7 @@ use tera::Tera;
 
 pub fn render_template_with_md(
     template: &str,
-    frontmatter: &toml::Table,
+    frontmatter: &impl serde::Serialize,
     content: &str,
     escape: bool,
 ) -> color_eyre::Result<String> {
@@ -34,7 +34,7 @@ mod tests {
         assert_eq!(
             output,
             "<html>\n  <head>\n    <title>Test</title>\n  \
-            </head>\n  <body><h1>This is a test</h1></body>\n</html>\n"
+                </head>\n  <body><h1>This is a test</h1></body>\n</html>\n"
         );
     }
 
