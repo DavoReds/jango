@@ -16,18 +16,49 @@ pub fn render_template_with_md(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use jango::parsing::process_md_file;
+    use rstest::*;
 
-    #[test]
-    fn render_template_works_with_valid_inputs() {
-        let template = include_str!("template.html");
-        let md = include_str!("test.md");
+    #[fixture]
+    #[once]
+    fn template() -> &'static str {
+        include_str!("template.html")
+    }
 
-        let (frontmatter, content) =
-            process_md_file(md).expect("Failed to process markdown file");
+    #[fixture]
+    #[once]
+    fn template_2() -> &'static str {
+        include_str!("template2.html")
+    }
 
-        let result =
-            render_template_with_md(template, &frontmatter, &content, false);
+    #[fixture]
+    #[once]
+    fn html_content() -> &'static str {
+        "<h1>This is a test</h1>"
+    }
+
+    #[fixture]
+    fn empty_table() -> toml::Table {
+        toml::Table::new()
+    }
+
+    #[fixture]
+    fn title_frontmatter(mut empty_table: toml::Table) -> toml::Table {
+        empty_table.insert("title".into(), "Test".into());
+        empty_table
+    }
+
+    #[rstest]
+    fn render_template_works_with_valid_inputs(
+        template: &str,
+        title_frontmatter: toml::Table,
+        html_content: &str,
+    ) {
+        let result = render_template_with_md(
+            template,
+            &title_frontmatter,
+            html_content,
+            false,
+        );
         assert!(result.is_ok());
 
         let output = result.expect("Failed to render template");
@@ -38,29 +69,27 @@ mod tests {
         );
     }
 
-    #[test]
-    fn render_template_errors_on_empty_content() {
-        let template = include_str!("template.html");
-        let md = "+++\n+++";
-
-        let (frontmatter, content) =
-            process_md_file(md).expect("Failed to process markdown file");
-
-        let result =
-            render_template_with_md(template, &frontmatter, &content, false);
+    #[rstest]
+    fn render_template_errors_on_empty_content(
+        template: &str,
+        empty_table: toml::Table,
+    ) {
+        let result = render_template_with_md(template, &empty_table, "", false);
         assert!(result.is_err());
     }
 
-    #[test]
-    fn render_template_errors_on_template_mismatch() {
-        let template = include_str!("template2.html");
-        let md = include_str!("test.md");
-
-        let (frontmatter, content) =
-            process_md_file(md).expect("Failed to process markdown file");
-
-        let result =
-            render_template_with_md(template, &frontmatter, &content, false);
+    #[rstest]
+    fn render_template_errors_on_template_mismatch(
+        template_2: &str,
+        title_frontmatter: toml::Table,
+        html_content: &str,
+    ) {
+        let result = render_template_with_md(
+            template_2,
+            &title_frontmatter,
+            html_content,
+            false,
+        );
         assert!(result.is_err(), "{result:?}");
     }
 }
