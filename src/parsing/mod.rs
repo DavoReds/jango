@@ -66,11 +66,23 @@ pub fn process_md_file(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use rstest::*;
 
-    #[test]
-    fn extract_frontmatter_works_on_a_valid_file() {
-        let input = include_str!("test.md");
-        let tree = markdown::to_mdast(input, &default_md_parse_options())
+    #[fixture]
+    #[once]
+    fn md_test() -> &'static str {
+        include_str!("test.md")
+    }
+
+    #[fixture]
+    #[once]
+    fn yaml_test() -> &'static str {
+        include_str!("yaml_test.md")
+    }
+
+    #[rstest]
+    fn extract_frontmatter_works_on_a_valid_file(md_test: &str) {
+        let tree = markdown::to_mdast(md_test, &default_md_parse_options())
             .expect("This should not fail");
 
         let result = extract_md_frontmatter(&tree);
@@ -113,10 +125,11 @@ mod tests {
         assert!(result.is_err());
     }
 
-    #[test]
-    fn extract_frontmatter_errors_on_frontmatter_of_different_type() {
-        let input = include_str!("yaml_test.md");
-        let tree = markdown::to_mdast(input, &default_md_parse_options())
+    #[rstest]
+    fn extract_frontmatter_errors_on_frontmatter_of_different_type(
+        yaml_test: &str,
+    ) {
+        let tree = markdown::to_mdast(yaml_test, &default_md_parse_options())
             .expect("This should not fail");
 
         let result = extract_md_frontmatter(&tree);
@@ -144,8 +157,8 @@ mod tests {
     }
 
     #[test]
-    fn parse_frontmatter_errors_with_invalid_yaml() {
-        let input = "This is for a test\nvalid: false";
+    fn parse_frontmatter_errors_with_invalid_toml() {
+        let input = "This is for a test\nvalid = false";
 
         let result = parse_md_frontmatter(input);
         assert!(result.is_err());
@@ -164,11 +177,9 @@ mod tests {
         );
     }
 
-    #[test]
-    fn parse_contents_works_on_a_file_with_a_frontmatter() {
-        let input = include_str!("test.md");
-
-        let result = parse_md_content(input);
+    #[rstest]
+    fn parse_contents_works_on_a_file_with_a_frontmatter(md_test: &str) {
+        let result = parse_md_content(md_test);
         assert_eq!(
             result,
             "<h1>Lorem ipsum dolor sit amet</h1>\n<p>Lorem \
@@ -187,11 +198,9 @@ mod tests {
         );
     }
 
-    #[test]
-    fn process_md_file_works_on_a_file_with_a_frontmatter() {
-        let input = include_str!("test.md");
-
-        let result = process_md_file(input);
+    #[rstest]
+    fn process_md_file_works_on_a_file_with_a_frontmatter(md_test: &str) {
+        let result = process_md_file(md_test);
         assert!(result.is_ok());
 
         let (frontmatter, content) =
@@ -235,11 +244,11 @@ mod tests {
         );
     }
 
-    #[test]
-    fn process_md_file_errors_on_a_file_with_an_invalid_frontmatter() {
-        let input = include_str!("yaml_test.md");
-
-        let result = process_md_file(input);
+    #[rstest]
+    fn process_md_file_errors_on_a_file_with_an_invalid_frontmatter(
+        yaml_test: &str,
+    ) {
+        let result = process_md_file(yaml_test);
         assert!(result.is_err());
     }
 
