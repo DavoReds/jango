@@ -25,7 +25,12 @@
     in
       with pkgs; {
         devShells.default = mkShell {
-          buildInputs = [rustToolchain mold sccache cargo-nextest];
+          buildInputs = [
+            cargo-nextest
+            mold
+            rustToolchain
+            sccache
+          ];
         };
       });
 }
