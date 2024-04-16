@@ -26,10 +26,15 @@
       with pkgs; {
         devShells.default = mkShell {
           buildInputs = [
+            cargo-dist
+            cargo-mutants
             cargo-nextest
+            hyperfine
             mold
             rustToolchain
             sccache
+            upx
+            valgrind
           ];
         };
       });
