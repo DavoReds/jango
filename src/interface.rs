@@ -75,6 +75,10 @@ pub struct CommandLineArgs {
 {all-args}"
 ))]
 pub struct MarkdownArgs {
+    /// Don't escape input's HTML
+    #[arg(short, long = "inline")]
+    pub inline_html: bool,
+
     /// Path to the template file
     pub template: Utf8PathBuf,
 
