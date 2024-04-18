@@ -29,7 +29,7 @@
             cargo-dist
             cargo-mutants
             cargo-nextest
-            hyperfine
+            just
             mold
             rustToolchain
             sccache
