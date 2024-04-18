@@ -1,12 +1,12 @@
 mod arguments;
 mod markdown;
 
+use crate::{interface::Command, parsing::process_md_file};
+use camino::Utf8Path;
+
 use self::{
     arguments::render_template_with_args, markdown::render_template_with_md,
 };
-use crate::interface::Command;
-use camino::Utf8Path;
-use jango::parsing::process_md_file;
 
 #[allow(clippy::missing_errors_doc)]
 pub fn execute_application(command: Command) -> color_eyre::Result<()> {

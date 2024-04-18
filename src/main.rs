@@ -1,9 +1,5 @@
-mod execution;
-mod interface;
-
 use clap::Parser;
-use execution::execute_application;
-use interface::Cli;
+use jango::{execution::execute_application, interface::Cli};
 
 fn main() -> color_eyre::Result<()> {
     color_eyre::install()?;
