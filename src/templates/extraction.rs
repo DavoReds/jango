@@ -1,6 +1,13 @@
 use color_eyre::eyre::eyre;
 use markdown::mdast::Node;
 
+/// Given the root node of a Markdown ast, returns the String representing its TOML frontmatter if
+/// present.
+///
+/// # Errors
+///
+/// Returns an error if the input is an empty tree, if the tree contains no frontmatter node or if
+/// this frontmatter is in YAML instead of TOML.
 #[allow(clippy::option_if_let_else)]
 pub fn extract_md_frontmatter(root: &Node) -> color_eyre::Result<String> {
     match root.children() {

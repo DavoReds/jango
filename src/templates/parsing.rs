@@ -1,12 +1,20 @@
 use super::default_md_options;
 use color_eyre::eyre::Context;
 
+/// Given a string representing a TOML table, it'll parse it and return a `toml::Table` with its
+/// values.
+///
+/// # Errors
+///
+/// Returns an error if it failed to parse the input as valid TOML.
 pub fn parse_md_frontmatter(
     frontmatter: &str,
 ) -> color_eyre::Result<toml::Table> {
     toml::from_str(frontmatter).wrap_err("Failed to parse TOML fragment")
 }
 
+#[allow(clippy::missing_panics_doc)]
+#[must_use]
 pub fn parse_md_content(input: &str, inline_html: bool) -> String {
     markdown::to_html_with_options(input, &default_md_options(inline_html))
         .expect("This should never fail")
