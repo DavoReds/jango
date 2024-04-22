@@ -1,3 +1,4 @@
+use super::parsing::parse_key_val;
 use camino::Utf8PathBuf;
 use clap::{Args, Parser, Subcommand};
 
@@ -54,15 +55,16 @@ pub struct CommandLineArgs {
     #[arg(short, long)]
     pub escape: bool,
 
-    /// Optional text to pass to the template
-    #[arg(short, long)]
-    pub content: Option<String>,
+    /// `key=value` pairs to pass to the template
+    #[arg(short, long, value_parser = parse_key_val::<String, String>)]
+    pub data: Option<Vec<(String, String)>>,
 
     /// Path to the template file
+    #[arg(value_hint = clap::ValueHint::FilePath)]
     pub template: Utf8PathBuf,
 
-    /// Path for the output file
-    pub output: Utf8PathBuf,
+    /// Path for the output file. Prints to stdout if not present
+    pub output: Option<Utf8PathBuf>,
 }
 
 #[derive(Debug, Args)]
@@ -75,16 +77,18 @@ pub struct CommandLineArgs {
 {all-args}"
 ))]
 pub struct MarkdownArgs {
-    /// Don't escape input's HTML
+    /// Don't escape input's inline HTML
     #[arg(short, long = "inline")]
     pub inline_html: bool,
 
     /// Path to the template file
+    #[arg(value_hint = clap::ValueHint::FilePath)]
     pub template: Utf8PathBuf,
 
     /// Path to the Markdown file
+    #[arg(value_hint = clap::ValueHint::FilePath)]
     pub input: Utf8PathBuf,
 
-    /// Path for the output file
-    pub output: Utf8PathBuf,
+    /// Path for the output file. Prints to stdout if not present
+    pub output: Option<Utf8PathBuf>,
 }

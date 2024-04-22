@@ -3,12 +3,14 @@ use tera::Tera;
 
 pub fn render_template_with_args(
     template: &str,
-    content: Option<&str>,
+    data: Option<&[(String, String)]>,
     escape: bool,
 ) -> color_eyre::Result<String> {
     let mut ctx = tera::Context::new();
-    if let Some(text) = content {
-        ctx.insert("content", text);
+    if let Some(pairs) = data {
+        for (key, value) in pairs {
+            ctx.insert(key, value);
+        }
     }
 
     Tera::one_off(template, &ctx, escape).wrap_err("Failed to render template")
@@ -25,7 +27,7 @@ mod tests {
         fn render_template_works_with_valid_input(input in "\\PC*") {
             let template = "<body>{{ content }}</body>";
 
-            let result = render_template_with_args(template, Some(&input), false);
+            let result = render_template_with_args(template, Some(&[("content".to_string(), input.clone())]), false);
             assert!(result.is_ok());
 
             let output = result.expect("Failed to render template");
@@ -38,7 +40,7 @@ mod tests {
 
             let result = render_template_with_args(
                 template,
-                Some(&input),
+                Some(&[("content".to_string(), input)]),
                 false,
             );
             assert!(result.is_ok());
@@ -53,7 +55,7 @@ mod tests {
 
             let result = render_template_with_args(
                 template,
-                Some(&format!("<h1>{input}</h1>")),
+                Some(&[("content".to_string(), format!("<h1>{input}</h1>"))]),
                 true,
             );
             assert!(result.is_ok());
