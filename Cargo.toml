@@ -21,7 +21,7 @@ eula = false
 camino = { version = "1.1.6", features = ["serde1"] }
 clap = { version = "4.5.4", features = ["derive"] }
 color-eyre = "0.6.3"
-markdown = { version = "1.0.0-alpha.16", features = ["serde"] }
+markdown = { version = "1.0.0-alpha.17", features = ["serde"] }
 serde = "1.0.198"
 tera = { version = "1.19.1", features = ["date-locale"] }
 toml = { version = "0.8.12", default-features = false, features = ["parse"] }
