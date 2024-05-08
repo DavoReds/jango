@@ -33,7 +33,6 @@
             mold
             rustToolchain
             sccache
-            upx
             valgrind
           ];
         };
