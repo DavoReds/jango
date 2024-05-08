@@ -3,7 +3,7 @@ _default:
 
 @test *args:
   echo "Testing..."
-  mold -run cargo nextest run -j=$(nproc) {{ args }}
+  mold -run cargo nextest run {{ args }}
   echo "Formatting..."
   cargo fmt --check
   echo "Linting..."
