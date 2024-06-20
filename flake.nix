@@ -34,6 +34,10 @@
             sccache
             valgrind
           ];
+
+          shellHook = ''
+            export RUSTC_WRAPPER=sccache
+          '';
         };
       });
 }
