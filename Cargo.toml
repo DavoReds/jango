@@ -11,28 +11,24 @@ repository = "https://github.com/DavoReds/jango"
 description = "A CLI program to populate your templates"
 
 [dependencies]
-camino = { version = "1.1.7", features = ["serde1"] }
-clap = { version = "4.5.7", features = ["derive"] }
-color-eyre = "0.6.3"
-markdown = { version = "1.0.0-alpha.17", features = ["serde"] }
-serde = "1.0.203"
-tera = { version = "1.20.0", features = ["date-locale"] }
-toml = { version = "0.8.14", default-features = false, features = ["parse"] }
+camino = { version = "1.2.5", features = ["serde1"] }
+clap = { version = "4.6.6", features = ["derive"] }
+color-eyre = "0.6.5"
+markdown = { version = "1.0.0", features = ["serde"] }
+serde = "1.0.229"
+tera = "2.1.1"
+toml = { version = "1.1.4", default-features = false, features = ["parse", "serde"] }
 
 [dev-dependencies]
-proptest = "1.4.0"
-rstest = { version = "0.21.0", default-features = false }
+proptest = "1.11.0"
+rstest = { version = "0.26.1", default-features = false }
 
 [profile.release]
 strip = true
 opt-level = "z"
-lto = true
+lto = "thin"
 codegen-units = 1
 panic = "abort"
-
-[profile.dist]
-inherits = "release"
-lto = "thin"
 
 [lints.rust]
 unsafe_code = "forbid"

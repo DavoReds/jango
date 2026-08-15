@@ -9,7 +9,7 @@ pub fn render_template_with_args(
     let mut ctx = tera::Context::new();
     if let Some(pairs) = data {
         for (key, value) in pairs {
-            ctx.insert(key, value);
+            ctx.insert(key.clone(), value);
         }
     }
 
